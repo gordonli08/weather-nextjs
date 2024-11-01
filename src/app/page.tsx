@@ -4,6 +4,7 @@ import Input from "./components/Input";
 import { useState } from "react";
 import { WeatherData } from "./types/weather";
 import Image from "next/image";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 const Home = () => {
     const [city, setCity] = useState('');
@@ -55,9 +56,9 @@ const Home = () => {
                     </h1>
                 </div>
             </div>
-            {loading && <p>Loading...</p>}
+            {loading && <LoadingSpinner />}
             {error && (
-                <div className="mt-2 bg-white/25 w-full rounded-lg flex flex-col h-2/4 items-center">
+                <div className="mt-2 bg-white/25 w-full rounded-lg flex flex-col h-2/4 text-center">
                     <div className="mt-2 text-white">
                         {error}
                     </div>
