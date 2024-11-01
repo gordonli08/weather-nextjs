@@ -1,3 +1,13 @@
+This project uses dotenv and requires the following `.env.local` file. Please supplement an openweathermap api key.
+
+```bash
+WEATHER_API_URL=https://api.openweathermap.org/data/2.5/weather
+
+REACT_APP_WEATHER_API_KEY=XXXXXXXXXXXXXXXXXXXXXXX
+```
+
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
