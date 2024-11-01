@@ -7,7 +7,7 @@ import Image from "next/image";
 import LoadingSpinner from "./components/LoadingSpinner";
 
 const Home = () => {
-    const [city, setCity] = useState('');
+    const [city, setCity] = useState<string>('');
     const [data, setData] = useState<WeatherData | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -21,8 +21,7 @@ const Home = () => {
             );
             if (!response.ok) throw new Error('City not found');
 
-            const jsonData = await response.json()
-            console.log(jsonData);
+            const jsonData = await response.json();
             setData(jsonData);
         } catch (err: unknown) {
             if (err instanceof Error) {
@@ -33,7 +32,7 @@ const Home = () => {
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,7 +43,7 @@ const Home = () => {
 
     return (
         <div className="bg-cover bg-gradient-to-r from-blue-500 to-blue-300 h-screen">
-            <div className="bg-white/25 w-full rounded-lg flex flex-col h-fit">
+            <header className="bg-white/25 w-full rounded-lg flex flex-col h-fit" role="banner">
                 <div className="flex flex-col md:flex-row justify-between items-center p-12">
                     <Input
                         city={city}
@@ -55,31 +54,50 @@ const Home = () => {
                         Just a Weather App.
                     </h1>
                 </div>
-            </div>
-            {loading && <LoadingSpinner />}
-            {error && (
-                <div className="mt-2 bg-white/25 w-full rounded-lg flex flex-col h-2/4 text-center">
-                    <div className="mt-2 text-white">
-                        {error}
+            </header>
+
+            <main className="flex flex-col items-center justify-center" role="main">
+                {loading && (
+                    <div role="status" aria-live="polite">
+                        <LoadingSpinner />
+                        <span className="sr-only">Loading weather data...</span>
                     </div>
-                </div>)}
-            {data && (
-                <div className="mt-2 bg-white/25 w-full rounded-lg flex flex-col h-2/4 items-center">
-                    <div className="mt-2 text-white">
-                        <div className="text-3xl">{data.name}</div>
-                        <Image
-                            src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
-                            alt={data.weather[0].description}
-                            width={100}
-                            height={100}
-                        />
-                        <div className="text-base">{data.weather[0].description}</div>
-                        <div className="text-2xl" >{Math.round(data.main.temp)}° C</div>
-                        <div>{Math.round(data.main.temp_max)}° / {Math.round(data.main.temp_min)}° Feels like {Math.round(data.main.feels_like)}°</div>
-                        <div>Humidity: {data.main.humidity}%</div>
+                )}
+                
+                {error && (
+                    <div role="alert" aria-live="assertive" className="mt-2 bg-white/25 w-full rounded-lg flex flex-col h-2/4 text-center">
+                        <div className="mt-2 text-white">
+                            {error}
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+
+                {data && (
+                    <section
+                        className="mt-2 bg-white/25 w-full rounded-lg flex flex-col h-2/4 items-center"
+                        aria-label="Weather Information"
+                    >
+                        <div className="my-4 text-white">
+                            <h2 className="text-3xl" aria-label={`City name: ${data.name}`}>{data.name}</h2>
+                            <Image
+                                src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
+                                alt={`Weather icon: ${data.weather[0].description}`}
+                                width={100}
+                                height={100}
+                                className="my-2"
+                            />
+                            <p className="text-base" aria-label="Weather description">{data.weather[0].description}</p>
+                            <p className="text-2xl" aria-label="Temperature">
+                                {Math.round(data.main.temp)}° C
+                            </p>
+                            <p aria-label="Temperature range">
+                                {Math.round(data.main.temp_max)}° / {Math.round(data.main.temp_min)}° Feels like {Math.round(data.main.feels_like)}°
+                            </p>
+                            <p aria-label="Humidity">Humidity: {data.main.humidity}%</p>
+                        </div>
+                    </section>
+                )}
+            </main>
         </div>
     );
 };

@@ -3,8 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function GET(
     req: NextRequest,
 ) {
-    console.log(req)
-    const { searchParams } = new URL(req.url);
+    const searchParams = req.nextUrl.searchParams
     const city = searchParams.get('city');
 
     if (!city) {
@@ -16,14 +15,16 @@ export async function GET(
         const response = await fetch(url);
 
         if (!response.ok) {
-            throw new Error('Failed to fetch weather data');
+            return NextResponse.json(
+                { error: `Weather data fetch failed for city: ${city}` },
+                { status: response.status }
+            );
         }
 
         const data = await response.json();
-        console.log(data);
         return NextResponse.json(data);
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });      
+        return NextResponse.json(error, { status: 500 });      
     }
 }
